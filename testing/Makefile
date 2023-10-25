@@ -1,9 +1,20 @@
-.PHONY: list print collect
+.PHONY: list print collect complete coverage timing
 
 .ONESHELL:
 
 #this is necessary to prevent the "intermediate" report files in the reports directory from being deleted
 .SECONDARY:
+
+clean:
+	-rm -rf pytest-collection.txt
+	-rm -rf test_results
+
+complete:
+	$(MAKE) pytest-collection.txt
+	$(MAKE) tests.rst
+	$(MAKE) -k all
+	$(MAKE) timing
+	$(MAKE) coverage
 
 collect: pytest-collection.txt
 

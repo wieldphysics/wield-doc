@@ -16,7 +16,7 @@ ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
 IPYNB := $(shell find . -name '*.ipynb' -not -path '*/.ipynb_checkpoints/*' | sed 's/.* .*//g')
 IPYRST := $(patsubst %.ipynb,%.rst, $(IPYNB))
 
-.PHONY: help clean html livehtml dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest apidoc
+.PHONY: help clean html livehtml dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest apidoc fullclean
 
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
@@ -38,9 +38,21 @@ help:
 	@echo "  linkcheck  to check all external links for integrity"
 	@echo "  doctest    to run all doctests embedded in the documentation (if enabled)"
 
+complete: full-build-flag.txt
+
+full-build-flag.txt:
+	make -C testing complete
+	make html
+	touch full-build-flag.txt
+
+fullclean:
+	make -C testing clean
+	make clean
+
 clean:
 	-rm -rf $(BUILDDIR)/*
 	-rm -rf docs/_autosummary/
+	-rm -f full-build-flag.txt
 
 livehtml:
 	sphinx-autobuild --ignore '*.#*' --ignore '_autosummary' --ignore '*.pyc' --ignore '*.swp' --ignore '*.swo' -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html/docs --host='*' #--open-browser
