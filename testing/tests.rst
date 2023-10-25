@@ -9,6 +9,7 @@ pygwinc
 
    pygwinc.test.budgets.test_budgets
    pygwinc.test.inherit.test_inherit
+   pygwinc.test.noises.residualgas.test_residualgas
    pygwinc.test.noises.test_quantum
    pygwinc.test.struct.test_struct
 
