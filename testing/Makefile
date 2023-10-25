@@ -20,6 +20,11 @@ collect: pytest-collection.txt
 
 pytest-collection.txt:
 	pytest  --rootdir='.' -c 'pytest.ini' --ws-co --html='' | tee pytest-collection.txt
+	-mkdir -p test_results/reports/inprogress
+	-mkdir -p test_results/reports/assets;
+	-mkdir -p test_results/reports/coverage;
+	-mkdir -p test_results/reports/failed;
+	-mkdir -p test_results/reports/all;
 
 tests.rst: pytest-collection.txt
 	python3 -m wield.pytest.parse_collection pytest-collection.txt --api_rst > tests.rst
@@ -77,10 +82,7 @@ $(TESTS): %: test_results/reports/all/%.html
 test_results/reports/all/%.html:  
 		$(eval FILE := $(shell python3 -m wield.pytest.parse_collection pytest-collection.txt $*))
 		$(eval PREHTML := test_results/reports/inprogress/$*.html)
-		-mkdir -p test_results/reports/inprogress
 		ln --force -T -s ../assets test_results/reports/inprogress/assets;
-		-mkdir -p test_results/reports/assets
-		-mkdir -p test_results/reports/coverage
 		#-pytest $(FILE) --ws-skip-slow --html=$(PREHTML)
 		# This long command runs the specific pytest and generates a coverage file
 		coverage run --source=gwinc,wield --branch --context=$* --data-file=test_results/reports/coverage/$* -m pytest -c 'pytest.ini' --rootdir='.' $(FILE) --ws-skip-slow --html=$(PREHTML)
@@ -90,8 +92,6 @@ test_results/reports/all/%.html:
 			ln --force -T -s ../$*.html test_results/reports/all/$*.html; \
 			ln --force -T -s ../assets test_results/reports/all/assets; \
 		else\
-			mkdir -p test_results/reports/failed; \
-			mkdir -p test_results/reports/all; \
 			ln --force -T -s ../assets test_results/reports/failed/assets; \
 			mv $(PREHTML) test_results/reports/failed/; \
 			ln --force -T -s ../failed/$*.html test_results/reports/all/$*.html; \
