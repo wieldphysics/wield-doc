@@ -12,19 +12,22 @@ clean:
 complete:
 	$(MAKE) pytest-collection.txt
 	$(MAKE) tests.rst
-	$(MAKE) -k all
+	if [ ! -f fast-mode-flag.txt ]; then $(MAKE) -k all; fi
 	$(MAKE) timing
 	$(MAKE) coverage
 
 collect: pytest-collection.txt
 
 pytest-collection.txt:
-	pytest  --rootdir='.' -c 'pytest.ini' --ws-co --html='' | tee pytest-collection.txt
+	pytest  --rootdir='.' -c 'pytest.ini' --ws-co --html='' --color=yes | tee pytest-collection.txt
+	cat pytest-collection.txt | aha -b > pytest-collection.html
+	sed -i -e 's/\x1b\[[0-9;]*m//g' pytest-collection.txt # strip ansi codes
 	-mkdir -p test_results/reports/inprogress
 	-mkdir -p test_results/reports/assets;
 	-mkdir -p test_results/reports/coverage;
 	-mkdir -p test_results/reports/failed;
 	-mkdir -p test_results/reports/all;
+	if which conda >> /dev/null; then conda env export --from-history > test_results/conda_env.txt; fi
 
 tests.rst: pytest-collection.txt
 	python3 -m wield.pytest.parse_collection pytest-collection.txt --api_rst > tests.rst
