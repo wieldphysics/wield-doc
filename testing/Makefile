@@ -27,7 +27,7 @@ pytest-collection.txt:
 	-mkdir -p test_results/reports/coverage;
 	-mkdir -p test_results/reports/failed;
 	-mkdir -p test_results/reports/all;
-	if which conda >> \dev\null; then conda env export --from-history > test_results/conda_env.txt; fi
+	if which conda >> /dev/null; then conda env export --from-history > test_results/conda_env.txt; fi
 
 tests.rst: pytest-collection.txt
 	python3 -m wield.pytest.parse_collection pytest-collection.txt --api_rst > tests.rst
