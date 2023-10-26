@@ -134,20 +134,6 @@ wield.control.AAA
    wield.control.AAA.test.test_AAA_present
 
 
-wield.control.ACE
---------------------
-
-.. autosummary::
-   :recursive:
-   :template: custom-module-template.rst
-   :toctree: _autosummary
-
-   wield.control.ACE.test.test_electronics
-   wield.control.ACE.test.test_lqe
-   wield.control.ACE.test.test_reduce
-   wield.control.ACE.test.test_statespace
-
-
 wield.control.SFLU
 ---------------------
 
@@ -268,17 +254,5 @@ wield.quantum
    wield.quantum.test.T_qop_Q
    wield.quantum.test.T_qop_gkp
    wield.quantum.test.T_qop_loss
-
-
-wield_declarative
---------------------
-
-.. autosummary::
-   :recursive:
-   :template: custom-module-template.rst
-   :toctree: _autosummary
-
-   wield_declarative.test.argparse.test_args
-   wield_declarative.test.test_properties
 
 

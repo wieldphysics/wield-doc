@@ -1,4 +1,5 @@
 timing.txt
 pytest-collection.txt
 .coverage
+fast-mode-flag.txt
 
