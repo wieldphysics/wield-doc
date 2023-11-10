@@ -52,7 +52,8 @@ extensions = [
     "sphinx_toolbox.code",
     "sphinx_toolbox.decorators",
     "sphinx_toolbox.collapse",
-    "myst_parser",
+    # "myst_parser", # conflicts with myst_nb
+    "myst_nb",
     "sphinx.ext.autodoc",
     "sphinx.ext.extlinks",
     "sphinx.ext.autosummary",
@@ -121,6 +122,9 @@ autodoc_default_flags = ["members", "undoc-members"]
 srclink_project = "https://github.com/wield/wield"
 srclink_src_path = "src/wield/"
 srclink_branch = "main"
+
+# do not evaluate notebooks in sphinx
+nb_execution_mode = "off"
 
 # -- Options for HTML output ----------------------------------------------
 
