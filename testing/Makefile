@@ -103,7 +103,9 @@ test_results/reports/all/%.html:
 
 
 print:
-	@echo $(TESTS);
+	python3 -m wield.pytest.parse_collection pytest-collection.txt --sort timing_sort.txt;
+
+# @echo $(TESTS);
 
 
 all: $(TESTS) tests.rst pytest-collection.txt
