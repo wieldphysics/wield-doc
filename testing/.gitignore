@@ -2,6 +2,9 @@ timing.txt
 pytest-collection.txt
 pytest-collection.html
 
+timing_sort.txt
+tests.rst
+
 .coverage
 fast-mode-flag.txt
 
