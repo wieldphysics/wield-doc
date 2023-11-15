@@ -36,7 +36,6 @@ from wield.sphinx import ws_parse_cov_html
 # sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('./testing/'))
 
-
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -52,7 +51,8 @@ extensions = [
     "sphinx_toolbox.code",
     "sphinx_toolbox.decorators",
     "sphinx_toolbox.collapse",
-    "myst_parser",
+    # "myst_parser", # conflicts with myst_nb
+    "myst_nb",
     "sphinx.ext.autodoc",
     "sphinx.ext.extlinks",
     "sphinx.ext.autosummary",
@@ -76,7 +76,9 @@ templates_path = ["_templates"]
 source_suffix = [".rst", ".md"]
 
 # The master toctree document.
-master_doc = "docs/index"
+# master_doc = "docs/index"
+# no need to put docs if sphinx-build called with docs as SOURCEDIR
+master_doc = "index"
 
 # General information about the project.
 project = "wield"
@@ -104,7 +106,16 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ["_build", "**.ipynb_checkpoints", "testing"]
+exclude_patterns = [
+    "_build",
+    "**.ipynb_checkpoints",
+    # ensure that testing docs are not included.
+    # this is to capture all of the notebooks
+    "testing/*docs*",
+    "testing/**/*docs*",
+    "testing/**/*.rst",
+    "testing/*.rst",
+]
 
 # The name of the Pygments (syntax highlighting) style to use.
 # pygments_style = 'sphinx'
@@ -121,6 +132,9 @@ autodoc_default_flags = ["members", "undoc-members"]
 srclink_project = "https://github.com/wield/wield"
 srclink_src_path = "src/wield/"
 srclink_branch = "main"
+
+# do not evaluate notebooks in sphinx
+nb_execution_mode = "off"
 
 # -- Options for HTML output ----------------------------------------------
 
