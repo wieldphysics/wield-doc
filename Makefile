@@ -61,8 +61,6 @@ livehtml-theme:
 	sphinx-autobuild -a --watch '_templates' --watch '_static' --ignore '_autosummary' --ignore '*.#*' --ignore '*.pyc' --ignore '*.swp' --ignore '*.swo' -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html/docs --host='*' #--open-browser
 
 html:
-	conda info; exit
-	which $(SPHINXBUILD)
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html --color 2> >(tee html-build.log >&2)
 	cat html-build.log | aha -b > build/sphinx/html/html-build.log.html
 	# strip the ANSI codes
