@@ -52,7 +52,7 @@ extensions = [
     "sphinx_toolbox.decorators",
     "sphinx_toolbox.collapse",
     # "myst_parser", # conflicts with myst_nb
-    "myst_nb",
+    # "myst_nb",
     "sphinx.ext.autodoc",
     "sphinx.ext.extlinks",
     "sphinx.ext.autosummary",
@@ -111,10 +111,10 @@ exclude_patterns = [
     "**.ipynb_checkpoints",
     # ensure that testing docs are not included.
     # this is to capture all of the notebooks
-    "testing/*docs*",
-    "testing/**/*docs*",
-    "testing/**/*.rst",
-    "testing/*.rst",
+    # "testing/*docs*",
+    # "testing/**/*docs*",
+    # "testing/**/*.rst",
+    # "testing/*.rst",
 ]
 
 # The name of the Pygments (syntax highlighting) style to use.
@@ -126,7 +126,13 @@ pygments_style = "default"
 todo_include_todos = True
 
 # Autodoc settings
-autodoc_default_flags = ["members", "undoc-members"]
+# https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#confval-autodoc_default_options 
+# autodoc_default_flags = ["members", "undoc-members"]
+autodoc_default_options = {
+    "members": True,
+    "undoc-members": True,
+    #"exclude-members": '__weakref__',
+}
 
 # -- Options for sourcelinks
 srclink_project = "https://github.com/wield/wield"
