@@ -8,8 +8,10 @@
 clean:
 	-rm -rf pytest-collection.txt
 	-rm -rf test_results
+	-rm -rf conda-env.txt
 
 complete:
+	$(MAKE) conda-env.txt
 	$(MAKE) pytest-collection.txt
 	$(MAKE) tests.rst
 	if [ ! -f fast-mode-flag.txt ]; then $(MAKE) -k all; fi
@@ -31,6 +33,14 @@ pytest-collection.txt:
 
 tests.rst: pytest-collection.txt
 	python3 -m wield.pytest.parse_collection pytest-collection.txt --api_rst > tests.rst
+
+conda-env.txt:
+	conda env export --from-history > conda-env.txt
+	conda list > conda-list.txt
+	conda list --no-pip > conda-list-nopip.txt
+	conda list --export > conda-export.txt
+	pip list > pip-list.txt
+	pip freeze > pip-freeze.txt
 
 coverage: 
 		coverage combine --keep test_results/reports/coverage/*
