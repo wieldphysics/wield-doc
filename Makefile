@@ -51,7 +51,8 @@ fullclean:
 
 clean:
 	-rm -rf $(BUILDDIR)/*
-	-rm -rf docs/_autosummary/
+	# -rm -rf docs/_autosummary/
+	-find -L . -name '_autosummary' -exec rm -rf {} +
 	-rm -f full-build-flag.txt
 
 livehtml:
