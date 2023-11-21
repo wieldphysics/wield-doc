@@ -56,15 +56,32 @@ clean:
 	-rm -f full-build-flag.txt
 
 livehtml:
-	sphinx-autobuild --ignore '*.#*' --ignore '_autosummary' --ignore '*.pyc' --ignore '*.swp' --ignore '*.swo' -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html/docs --host='*' #--open-browser
+	# this just doesn't work well with all of the symlinks
+	# sphinx-autobuild --ignore '*.#*' --watch 'docs' --ignore '_autosummary' --ignore '*.pyc' --ignore '*.swp' --ignore '*.swo' -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html --host='*' #--open-browser
+	./livehtml.py
+
+livehtml-quick:
+	# this just doesn't work well with all of the symlinks
+	# sphinx-autobuild --ignore '*.#*' --watch 'docs' --ignore '_autosummary' --ignore '*.pyc' --ignore '*.swp' --ignore '*.swo' -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html --host='*' #--open-browser
+	./livehtml.py html-quick
 
 livehtml-theme:
-	sphinx-autobuild -a --watch '_templates' --watch '_static' --ignore '_autosummary' --ignore '*.#*' --ignore '*.pyc' --ignore '*.swp' --ignore '*.swo' -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html/docs --host='*' #--open-browser
+	sphinx-autobuild -a --watch '_templates' --watch '_static' --ignore '_autosummary' --ignore '*.#*' --ignore '*.pyc' --ignore '*.swp' --ignore '*.swo' -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html --host='*' #--open-browser
 
 html:
 	# conda info; exit
 	# which $(SPHINXBUILD)
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html --color 2> >(tee html-build.log >&2)
+	cat html-build.log | aha -b > build/sphinx/html/html-build.log.html
+	# strip the ANSI codes
+	sed -i -e 's/\x1b\[[0-9;]*m//g' html-build.log
+	@echo
+	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
+
+html-quick:
+	# conda info; exit
+	# which $(SPHINXBUILD)
+	FAST_BUILD=True $(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html --color 2> >(tee html-build.log >&2)
 	cat html-build.log | aha -b > build/sphinx/html/html-build.log.html
 	# strip the ANSI codes
 	sed -i -e 's/\x1b\[[0-9;]*m//g' html-build.log

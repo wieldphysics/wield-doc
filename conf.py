@@ -67,6 +67,9 @@ extensions = [
     "wield.sphinx.linkcode_ws",
 ]
 
+if os.environ.get('FAST_BUILD', None):
+    extensions.remove("sphinx.ext.autosummary")
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
@@ -124,15 +127,6 @@ pygments_style = "default"
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
-
-# Autodoc settings
-# https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#confval-autodoc_default_options 
-# autodoc_default_flags = ["members", "undoc-members"]
-autodoc_default_options = {
-    "members": True,
-    "undoc-members": True,
-    #"exclude-members": '__weakref__',
-}
 
 # -- Options for sourcelinks
 srclink_project = "https://github.com/wield/wield"
@@ -240,11 +234,25 @@ autosummary_generate = True
 autosummary_imported_members = False
 autosummary_generate_overwrite = True
 
+autodoc_member_order = 'bysource'
+
 autodoc_mock_imports = [
     "pygraphviz",
     "pcaspy",
     "control",
+    # "wield",
+    # "gwinc",
+    # "buzz",
 ]
+
+# Autodoc settings
+# https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#confval-autodoc_default_options 
+# autodoc_default_flags = ["members", "undoc-members"]
+autodoc_default_options = {
+    "members": True,
+    "undoc-members": True,
+    #"exclude-members": '__weakref__',
+}
 
 python_use_unqualified_type_names = True
 
