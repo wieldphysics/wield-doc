@@ -21,7 +21,7 @@ complete:
 collect: pytest-collection.txt
 
 pytest-collection.txt:
-	pytest  --rootdir='.' -c 'pytest.ini' --ws-co --html='' --color=yes | tee pytest-collection.txt
+	pytest . ../docs/  --rootdir='.' -c 'pytest.ini' --ws-co --html='' --color=yes | tee pytest-collection.txt
 	cat pytest-collection.txt | aha -b > pytest-collection.html
 	sed -i -e 's/\x1b\[[0-9;]*m//g' pytest-collection.txt # strip ansi codes
 	-mkdir -p test_results/reports/inprogress
@@ -100,7 +100,8 @@ test_results/reports/all/%.html:
 		ln --force -T -s ../assets test_results/reports/inprogress/assets;
 		#-pytest $(FILE) --ws-skip-slow --html=$(PREHTML)
 		# This long command runs the specific pytest and generates a coverage file
-		coverage run --source=$(cat modules) --branch --context=$* --data-file=test_results/reports/coverage/$* -m pytest -c 'pytest.ini' --rootdir='.' $(FILE) --ws-skip-slow --html=$(PREHTML)
+		coverage run --source=$(cat modules) --branch --context=$* --data-file=test_results/reports/coverage/$* \
+			-m pytest  -c 'pytest.ini' --rootdir='.' $(FILE) --ws-skip-slow --html=$(PREHTML)
 		if [ "$$?" -eq 0 ]; \
     then \
 			mv $(PREHTML) test_results/reports/; \
