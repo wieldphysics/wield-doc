@@ -29,15 +29,20 @@ def shell(cmd):
 
     def run_shell():
         ret = subprocess.run(args=cmd, shell=True, capture_output=False)
-
     return run_shell
 
-server = Server()
 
-if len(sys.argv) == 1:
-    arg = 'html'
-elif len(sys.argv) > 1:
-    arg = sys.argv[1]
+if __name__ == '__main__':
+    server = Server()
 
-server.watch('docs/**/*.rst', shell('make {}'.format(arg)))
-server.serve(root='build/sphinx/html')
+    if len(sys.argv) == 1:
+        arg = 'html'
+    elif len(sys.argv) > 1:
+        arg = sys.argv[1]
+
+    cmd = shell('make {}'.format(arg))
+    # run the build once before starting
+    cmd()
+
+    server.watch('docs/**/*.rst', cmd)
+    server.serve(root='build/sphinx/html')

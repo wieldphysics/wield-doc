@@ -58,12 +58,12 @@ clean:
 livehtml:
 	# this just doesn't work well with all of the symlinks
 	# sphinx-autobuild --ignore '*.#*' --watch 'docs' --ignore '_autosummary' --ignore '*.pyc' --ignore '*.swp' --ignore '*.swo' -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html --host='*' #--open-browser
-	./livehtml.py
+	python -m wield.sphinx.livehtml html
 
 livehtml-quick:
 	# this just doesn't work well with all of the symlinks
 	# sphinx-autobuild --ignore '*.#*' --watch 'docs' --ignore '_autosummary' --ignore '*.pyc' --ignore '*.swp' --ignore '*.swo' -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html --host='*' #--open-browser
-	./livehtml.py html-quick
+	python -m wield.sphinx.livehtml html-quick
 
 livehtml-theme:
 	sphinx-autobuild -a --watch '_templates' --watch '_static' --ignore '_autosummary' --ignore '*.#*' --ignore '*.pyc' --ignore '*.swp' --ignore '*.swo' -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html --host='*' #--open-browser
