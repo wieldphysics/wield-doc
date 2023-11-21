@@ -68,6 +68,11 @@ extensions = [
 ]
 
 if os.environ.get('FAST_BUILD', None):
+    fast_build = True
+else:
+    fast_build = False
+
+if fast_build:
     extensions.remove("sphinx.ext.autosummary")
 
 # Add any paths that contain templates here, relative to this directory.
@@ -119,6 +124,15 @@ exclude_patterns = [
     "testing/**/*.rst",
     "testing/*.rst",
 ]
+
+
+if fast_build:
+    exclude_patterns.extend(
+        [
+            "_autosummary",
+            "ws-docs/_autosummary",
+        ]
+    )
 
 # The name of the Pygments (syntax highlighting) style to use.
 # pygments_style = 'sphinx'
