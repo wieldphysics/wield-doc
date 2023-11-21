@@ -41,6 +41,8 @@ conda-env.txt:
 	conda list --export > conda-export.txt
 	pip list > pip-list.txt
 	pip freeze > pip-freeze.txt
+	find -L . -name '*.py' -type f -print0 | xargs -0 sed -n 's/^\(from\|import\) \([^. ][^. ]*\.[^. ]*\)\(\.\| \).*$$/\2/p' | sort -u > python-import2.txt
+	find -L . -name '*.py' -type f -print0 | xargs -0 sed -n 's/^\(from\|import\) \([^. ][^. ]*\)\(\.\| \).*$$/\2/p' | sort -u > python-import1.txt
 
 coverage: 
 		coverage combine --keep test_results/reports/coverage/*
