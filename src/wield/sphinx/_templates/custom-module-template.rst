@@ -47,7 +47,10 @@
    {% if functions %}
    .. rubric:: {{ _('Functions') }}
 
+   .. the null templates have autosummary make the table, but not the entries
+
    .. autosummary::
+      :template: custom-null-function-template.rst
 
    {% for item in functions %}
       {{ item }}
@@ -57,9 +60,12 @@
 
    {% block exceptions %}
    {% if exceptions %}
+
    .. rubric:: {{ _('Exceptions') }}
 
    .. autosummary::
+      :template: custom-null-function-template.rst
+
    {% for item in exceptions %}
       {{ item }}
    {%- endfor %}
@@ -69,6 +75,7 @@
    {% for item in attributes %}
    .. autoattribute:: {{ item }}
 
+   .. now explicitly make the entires
 
    {%- endfor %}
 

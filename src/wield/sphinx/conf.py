@@ -74,8 +74,8 @@ if os.environ.get('FAST_BUILD', None):
 else:
     fast_build = False
 
-if fast_build:
-    extensions.remove("sphinx.ext.autosummary")
+# if fast_build:
+    # extensions.remove("sphinx.ext.autosummary")
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = [
@@ -253,9 +253,15 @@ def linkcode_resolve(domain, info):
     return "https://github.com/wield/wield/%s.py" % filename
 
 
-autosummary_generate = True
+if not fast_build:
+    autosummary_generate = True
+else:
+    autosummary_generate = False
+
 autosummary_imported_members = False
-autosummary_generate_overwrite = True
+
+# should just regularly clean instead
+autosummary_generate_overwrite = False
 
 autodoc_member_order = 'bysource'
 
@@ -361,7 +367,7 @@ def linkcode_ws_resolve(domain, info):
     elif module.startswith('wield.AAA'):
         d['github'] = "https://github.com/wield/wield-AAA/tree/main/src/%s.py" % filename + lno('L')
     elif module.lower().startswith('gwinc'):
-        d['git.ligo'] = "https://git.ligo.org/gwinc/pygwinc/-/tree/master/gwinc/%s.py" % filename + lno('L')
+        d['git.ligo'] = "https://git.ligo.org/gwinc/pygwinc/-/tree/master/pygwinc/%s.py" % filename + lno('L')
     else:
         pass
 
