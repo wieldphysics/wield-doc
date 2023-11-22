@@ -33,8 +33,10 @@ import importlib
 import urllib.parse
 from wield.sphinx import ws_parse_cov_html
 
+testing_dir = os.environ.setdefault('TESTING_DIR', "./testing")
+
 # sys.path.insert(0, os.path.abspath('.'))
-sys.path.insert(0, os.path.abspath('./testing/'))
+sys.path.insert(0, os.path.abspath(testing_dir))
 
 # -- General configuration ------------------------------------------------
 
@@ -76,7 +78,10 @@ if fast_build:
     extensions.remove("sphinx.ext.autosummary")
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ["_templates"]
+templates_path = [
+    "_templates",
+    os.path.abspath(os.path.join(os.path.split(__file__)[0], '_templates')),
+]
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
@@ -116,6 +121,7 @@ language = None
 # This patterns also effect to html_static_path and html_extra_path
 exclude_patterns = [
     "_build",
+    "build",
     "**.ipynb_checkpoints",
     # ensure that testing docs are not included.
     # this is to capture all of the notebooks
@@ -203,7 +209,10 @@ napoleon_type_aliases = {
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ["_static"]
+html_static_path = [
+    "_static",
+    os.path.abspath(os.path.join(os.path.split(__file__)[0], '_static'))
+]
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -232,8 +241,8 @@ html_sidebars = {
 # Output file base name for HTML help builder.
 htmlhelp_basename = "wield"
 
-html_logo = 'docs/logo/logo_ws_block.svg'
-
+# html_logo = 'docs/logo/logo_ws_block.svg'
+html_logo = os.path.abspath(os.path.join(os.path.split(__file__)[0], 'logo/logo_ws_block.svg'))
 
 def linkcode_resolve(domain, info):
     if domain != 'py':
@@ -278,6 +287,9 @@ assets_dir = '.'
 
 coverage_folder = './testing/test_results/coverage/'
 test_results_folder = 'testing/test_results'
+
+test_results_folder = os.path.join(testing_dir, 'test_results')
+coverage_folder = os.path.join(testing_dir, 'test_results', 'coverage')
 
 try:
     coverage_d = ws_parse_cov_html.parse_cov_index(os.path.join(coverage_folder, 'index.html'))
@@ -360,13 +372,14 @@ def linkcode_resolve(domain, info):
     """
     return linkcode_ws_resolve(domain, info)[1]
 
+# must be specified in sub conf.py files that import this one
 
 def autodoc_process_docstring(app, what, name, obj, options, lines):
     """Detects pytests and augments their documentation to include links to their output files
     """
     tdirs = [
         # note that this assumes that srcdir is in "docs" just above the conf dir where "testing" lives
-        os.path.join(app.srcdir, '../', test_results_folder),
+        test_results_folder,
         # currently disabling other test pulls
         # so that the workflow is "pristine"
         # os.path.join(app.srcdir, 'test_archive'),
@@ -385,7 +398,7 @@ def autodoc_process_docstring(app, what, name, obj, options, lines):
         """
         """
         # this source path assumes that srcdir is in "docs" one level deeper than conf.py
-        source_path = os.path.relpath(fpath, os.path.join(app.srcdir, '../'))
+        source_path = os.path.relpath(fpath, os.path.join(testing_dir, '../'))
         source_path_inv_pre = os.path.relpath(app.srcdir, app.outdir)
         source_path_inv_src = os.path.relpath(source_path_inv_pre, source_path)
         source_path_inv_out = os.path.relpath('.', source_path)
@@ -482,8 +495,8 @@ def autodoc_process_docstring(app, what, name, obj, options, lines):
             lines.append("           ")
             for fpath in ordered_test_outputs(dpath):
                 # lines.append("    * :download:`{}</{}>`".format(fpath, os.path.relpath(os.path.join(dpath, fpath), app.srcdir)))
-                print("DPATH", dpath, " & ", fpath)
-                print("CHECK", os.path.relpath(os.path.join(dpath, fpath), os.path.abspath(test_results_folder)))
+                # print("DPATH", dpath, " & ", fpath)
+                # print("CHECK", os.path.relpath(os.path.join(dpath, fpath), os.path.abspath(test_results_folder)))
                 rp = get_relpath_root(
                     '_autosummary/',
                     os.path.join(

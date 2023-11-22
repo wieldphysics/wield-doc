@@ -6,4 +6,7 @@
 # NOTICE: authors should document their contributions in concisely in NOTICE
 # with details inline in source files, comments, and docstrings.
 
+import os
+os.environ.setdefault('TESTING_DIR', "./testing")
+
 from wield.sphinx.conf import *
