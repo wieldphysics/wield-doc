@@ -32,6 +32,14 @@ def shell(cmd):
     return run_shell
 
 
+def ignore(path):
+    if "_autosummary" in path:
+        return True
+    if "testing/" in path and "docs/" in path:
+        return True
+    return False
+
+
 if __name__ == '__main__':
     server = Server()
 
@@ -44,5 +52,9 @@ if __name__ == '__main__':
     # run the build once before starting
     cmd()
 
-    server.watch('docs/**/*.rst', cmd)
+    server.watch('./*.md', cmd, ignore=ignore)
+    server.watch('./**/*.md', cmd, ignore=ignore)
+    server.watch('./*.rst', cmd, ignore=ignore)
+    server.watch('./**/*.rst', cmd, ignore=ignore)
+
     server.serve(root='build/sphinx/html')

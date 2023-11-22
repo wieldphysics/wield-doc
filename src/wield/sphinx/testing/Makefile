@@ -1,5 +1,6 @@
 .PHONY: list print collect complete coverage timing
 
+# this is simpler to make multi-line scripts that can save variables and such
 .ONESHELL:
 
 #this is necessary to prevent the "intermediate" report files in the reports directory from being deleted
@@ -74,12 +75,6 @@ timing:
 		# remove the timing column
 		awk '{print $$1}' timing.txt > timing_sort.txt
 
-TESTS = $(shell python3 -m wield.pytest.parse_collection pytest-collection.txt --sort timing_sort.txt 2> /dev/null)
-
-# remove all for it to not re-build failed tests
-$(TESTS): %: test_results/reports/all/%.html
-		@echo $*
-
 test_results/reports/all/%.html:  
 		$(eval FILE := $(shell python3 -m wield.pytest.parse_collection pytest-collection.txt $*))
 		$(eval PREHTML := test_results/reports/inprogress/$*.html)
@@ -106,9 +101,14 @@ print:
 
 # @echo $(TESTS);
 
+TESTS = $(shell python3 -m wield.pytest.parse_collection pytest-collection.txt --sort timing_sort.txt 2> /dev/null)
+
+# remove all for it to not re-build failed tests
+$(TESTS): %: test_results/reports/all/%.html
+		@echo $*
 
 all: $(TESTS) tests.rst pytest-collection.txt
 
 
-.DEFAULT_GOAL := all
+.DEFAULT_GOAL := complete
 

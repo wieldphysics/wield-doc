@@ -1,5 +1,4 @@
 {{ objname | escape | underline}}
-
 {{ fullname | escape}}
 
 {% block modules %}
@@ -75,18 +74,14 @@
    {% for item in attributes %}
    .. autoattribute:: {{ item }}
 
-   .. now explicitly make the entires
-
    {%- endfor %}
-
+ 
    {% for item in functions %}
    .. autofunction:: {{ item }}
-
-
+ 
    {%- endfor %}
-
+ 
    {% for item in exceptions %}
    .. autoexception:: {{ item }}
-
 
    {%- endfor %}

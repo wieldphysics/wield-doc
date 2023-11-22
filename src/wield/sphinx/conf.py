@@ -171,18 +171,6 @@ html_theme = "sphinx_rtd_theme"
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-html_theme_options = dict(
-    description="Documentation for the wield physics toolkit",
-    extra_nav_links={
-        #'LIGO CDS repository' : 'https://git.ligo.org/CDS/dttxml'
-    },
-    show_powered_by=False,
-    show_related=True,
-    page_width='auto',
-
-
-)
-
 # options for sphinx_rtd_theme
 html_theme_options = {
     #'analytics_id': 'G-XXXXXXXXXX',  #  Provided by Google in your dashboard
@@ -196,9 +184,9 @@ html_theme_options = {
     # Toc options
     'collapse_navigation': True,
     'sticky_navigation': True,
-    'navigation_depth': 5,
+    'navigation_depth': 10,
     'includehidden': True,
-    'titles_only': False
+    'titles_only': True
 }
 
 napoleon_type_aliases = {
@@ -278,8 +266,8 @@ autodoc_mock_imports = [
 # https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#confval-autodoc_default_options 
 # autodoc_default_flags = ["members", "undoc-members"]
 autodoc_default_options = {
-    "members": True,
-    "undoc-members": True,
+    "members": False,
+    "undoc-members": False,
     #"exclude-members": '__weakref__',
 }
 
@@ -445,7 +433,7 @@ def autodoc_process_docstring(app, what, name, obj, options, lines):
                 lines.append("")
             reportname = '/_static/reports/{}'.format(fname.replace('.py', '.html'))
             # note that the inclusion of the dummy location "name" is necessary
-            lines.append(r"Report in `report <{}>`__".format(get_relpath_root('_autosummary/', reportname)))
+            lines.append(r"`pytest-html report <{}>`__".format(get_relpath_root('_autosummary/', reportname)))
         return
 
     if what != 'function':
