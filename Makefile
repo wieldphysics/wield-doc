@@ -16,7 +16,7 @@ ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) doc
 IPYNB := $(shell find . -name '*.ipynb' -not -path '*/.ipynb_checkpoints/*' | sed 's/.* .*//g')
 IPYRST := $(patsubst %.ipynb,%.rst, $(IPYNB))
 
-.PHONY: help clean html livehtml dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest apidoc fullclean
+.PHONY: help clean html livehtml dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest apidoc fullclean complete
 
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
@@ -38,12 +38,9 @@ help:
 	@echo "  linkcheck  to check all external links for integrity"
 	@echo "  doctest    to run all doctests embedded in the documentation (if enabled)"
 
-complete: full-build-flag.txt
-
-full-build-flag.txt:
+complete:
 	make -C testing complete
 	make html
-	touch full-build-flag.txt
 
 fullclean:
 	make -C testing clean
