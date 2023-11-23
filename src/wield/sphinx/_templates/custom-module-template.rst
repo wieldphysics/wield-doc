@@ -1,4 +1,4 @@
-{{ objname | escape | underline}}
+{{ name | escape | underline}}
 {{ fullname | escape}}
 
 {% block modules %}
