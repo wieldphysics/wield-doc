@@ -29,6 +29,7 @@ import os
 import re
 
 import inspect
+import textwrap
 import importlib
 import urllib.parse
 from wield.sphinx import ws_parse_cov_html
@@ -53,6 +54,8 @@ extensions = [
     "sphinx_toolbox.code",
     "sphinx_toolbox.decorators",
     "sphinx_toolbox.collapse",
+    # needs sphinx-code-include https://sphinx-code-include.readthedocs.io/en/latest/index.html
+    "code_include.extension",
     # "myst_parser", # conflicts with myst_nb
     "myst_nb",
     "sphinx.ext.autodoc",
@@ -473,22 +476,140 @@ def autodoc_process_docstring(app, what, name, obj, options, lines):
         if not lines:
             lines.append("This is a pytest needing documentation")
             lines.append("")
-            lines.append("")
 
         if mydirs:
             # print("COOL", mydirs)
             pass
 
-        for d in mydirs:
+        #####
+        # Include source code:
+        #####
+
+        # should check how long the code line is, if too long, should indicate to click
+        # the source link button
+        # if short, then keep open
+        src = inspect.getsource(obj)
+        src = textwrap.dedent(src)
+        split1 = src.split('"""')
+        split2 = src.split("'''")
+
+        if len(split1[0]) < len(split2[0]):
+            split = split1
+            stype = '"""'
+        else:
+            split = split2
+            stype = "'''"
+
+        if len(split) >= 3:
+            srclines = split[0].splitlines()
+            # test if the line is empty except for whitespace
+            # if so extract it and move it into the docstring portion
+            # this gets the indent and prevents a dead line
+            if not srclines[-1].strip():
+                docpre = srclines[-1]
+                srclines = srclines[:-1]
+            else:
+                docpre = ""
+            docstring = docpre + stype + split[1] + stype
+            srclines.extend(stype.join(split[2:]).splitlines())
+        else:
+            srclines = src.splitlines()
+            docstring = None
+
+        if True:
+            lines.append("")
+            lines.append(".. collapse:: code")
+            if len(srclines) < 40:
+                lines.append("   :open:")
+
+            lines.append("   ")
+
+            if docstring:
+                lines.append("   .. collapse:: docstring")
+                lines.append("      ")
+                lines.append("      .. code-block:: python")
+                lines.append(" "*9)
+                lines.extend(" "*9 + line for line in docstring.splitlines())
+
+            lines.append("   .. code-block:: python")
+            lines.append("      :linenos:")
+            lines.append(" "*6)
+            lines.extend(" "*6 + line for line in srclines)
+            # lines.append("   .. code-include :: :func:`{name}`".format(name=name))
+            # lines.append("       :language: python")
+            # lines.append("       :link-at-bottom:")
+            # lines.append("       :link-to-documentation:")
+            # lines.append("       ")
+
+
+        #####
+        # include py test about segment
+        ##### 
+
+        lines.append("")
+        lines.append(".. collapse:: pytest information")
+        lines.append("   ")
+
+        lines.extend(textwrap.indent(
+            textwrap.dedent("""\
+            This code is wrapped in a pytest function using conventions detailed in :ref:`pytest_conventions`. The full name of this test, as known by the documentation, is:
+            """).strip(), " "*3
+        ).splitlines())
+        lines.append(" "*3)
+        lines.append(" "*3 + "``{}`` ".format(name))
+        lines.append(" "*3)
+        lines.extend(textwrap.indent(
+            textwrap.dedent("""\
+            The full name is useful when building documentation, to link a reference to this page using ``:func:`name```, or directly include it with an autofunction directive. The collapse nodes below show every instance of the test run. There may only be one, but if the test was run multiple times through pytest parametrizations, the list can be longer.
+            """).strip(), " "*3
+        ).splitlines())
+
+        lines.append("")
+
+        #####
+        # include test outputs
+        ##### 
+
+        # needs sphinx-toolbox https://sphinx-toolbox.readthedocs.io/en/latest/extensions/collapse.html
+        for idx, d in enumerate(mydirs):
             dpath = os.path.join(tpath, d)
             lines.append("")
             lines.append(".. collapse:: {}".format(d))
+            # open the first one by default
+            if idx == 0:
+                lines.append("   :open:")
             # TODO do some image conversion
             # possibly using https://www.sphinx-doc.org/en/master/usage/extensions/imgconverter.html
             # i.e. check if pdf is a single page, then have imgconvert rasterize it to directly include within the collapse
-            lines.append("           ")
+            lines.append("    ")
             for fpath in ordered_test_outputs(dpath):
                 # lines.append("    * :download:`{}</{}>`".format(fpath, os.path.relpath(os.path.join(dpath, fpath), app.srcdir)))
+                if fpath == 'capture.txt':
+                    rp = get_relpath_root(
+                        '_autosummary/',
+                        os.path.join(
+                            '/_static/test_results/',
+                            os.path.relpath(
+                                os.path.join(dpath, fpath),
+                                os.path.abspath(test_results_folder)
+                            )
+                        )
+                    )
+                    with open(os.path.join(dpath, fpath)) as F:
+                        output = F.read()
+                        # get the output string after the "stdout call"
+                        output = output.split("stdout call", 1)[-1].strip()
+                        outlines = output.splitlines()
+                    if len(outlines) < 1e4:
+                        lines.append(r"    .. collapse:: output".format(fpath, rp))
+                        if len(outlines) < 30:
+                            lines.append(r"      :open:")
+                        lines.append(r"      ")
+                        lines.append(r"      .. code-block:: text")
+                        lines.append(r"         ")
+                        lines.extend(" "*9 + line for line in outlines)
+                        lines.append(r"    ")
+
                 # print("DPATH", dpath, " & ", fpath)
                 # print("CHECK", os.path.relpath(os.path.join(dpath, fpath), os.path.abspath(test_results_folder)))
                 rp = get_relpath_root(
@@ -504,7 +625,9 @@ def autodoc_process_docstring(app, what, name, obj, options, lines):
                 # print("relpath: ", fpath, rp)
                 # lines.append(r"    * `{} <{}>`__".format(fpath, urllib.parse.quote(rp)))
                 lines.append(r"    * `{} <{}>`__".format(fpath, rp))
+
             lines.append("")
+
         # print("OUT: ", name)
     return
 
