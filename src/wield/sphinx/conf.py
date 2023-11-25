@@ -530,6 +530,7 @@ def autodoc_process_docstring(app, what, name, obj, options, lines):
                 lines.append("      .. code-block:: python")
                 lines.append(" "*9)
                 lines.extend(" "*9 + line for line in docstring.splitlines())
+                lines.append(" "*6)
 
             lines.append("   .. code-block:: python")
             lines.append("      :linenos:")
@@ -540,6 +541,12 @@ def autodoc_process_docstring(app, what, name, obj, options, lines):
             # lines.append("       :link-at-bottom:")
             # lines.append("       :link-to-documentation:")
             # lines.append("       ")
+
+            ## for debugging
+            # print(" CODE:")
+            # for line in lines:
+            #     print(line)
+            # print("done CODE:")
 
 
         #####
