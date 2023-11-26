@@ -49,9 +49,10 @@ sys.path.insert(0, os.path.abspath(testing_dir))
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    "sphinx.ext.napoleon",
     #'nbsphinx',
     "sphinx_toolbox.assets",
-    "sphinx_toolbox.code",
+    #  "sphinx_toolbox.code", # this seems to drop 2+ indendation levels.
     "sphinx_toolbox.decorators",
     "sphinx_toolbox.collapse",
     # needs sphinx-code-include https://sphinx-code-include.readthedocs.io/en/latest/index.html
@@ -62,10 +63,9 @@ extensions = [
     "sphinx.ext.extlinks",
     "sphinx.ext.autosummary",
     "sphinx.ext.todo",
-    "sphinx.ext.coverage",
+    # "sphinx.ext.coverage",
     "sphinx.ext.mathjax",
     "sphinx.ext.githubpages",
-    "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
     'sphinx.ext.autosectionlabel',
     # "sphinx.ext.linkcode",
