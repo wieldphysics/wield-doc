@@ -9,6 +9,9 @@ conda-export.txt
 pip-list.txt
 pip-freeze.txt
 
+python-import1.txt
+python-import2.txt
+
 timing_sort.txt
 tests.rst
 

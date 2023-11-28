@@ -3,7 +3,7 @@
 
 # You can set these variables from the command line.
 SHELL 			 := /bin/bash
-SPHINXOPTS    = -c ./
+SPHINXOPTS    = -T -v -c ./
 SPHINXBUILD   = sphinx-build
 PAPER         =
 BUILDDIR      = ./build/sphinx
@@ -82,6 +82,16 @@ html-quick:
 	# conda info; exit
 	# which $(SPHINXBUILD)
 	FAST_BUILD=True $(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html --color 2> >(tee html-build.log >&2)
+	cat html-build.log | aha -b > build/sphinx/html/html-build.log.html
+	# strip the ANSI codes
+	sed -i -e 's/\x1b\[[0-9;]*m//g' html-build.log
+	@echo
+	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
+
+html-debug:
+	# conda info; exit
+	# which $(SPHINXBUILD)
+	$(SPHINXBUILD) -b html -P $(ALLSPHINXOPTS) $(BUILDDIR)/html --color 2> >(tee html-build.log >&2)
 	cat html-build.log | aha -b > build/sphinx/html/html-build.log.html
 	# strip the ANSI codes
 	sed -i -e 's/\x1b\[[0-9;]*m//g' html-build.log
