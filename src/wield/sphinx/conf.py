@@ -421,7 +421,7 @@ def autodoc_process_docstring(app, what, name, obj, options, lines):
             return
         fpath, fname = os.path.split(ofile)
         istest, tpath = istest_check(fname)
-        if hasattr(obj, 'tpath_join'):
+        if hasattr(obj, 'tjoin'):
             if not istest:
                 lines.append("This is a pytest, but its test folder is missing. Some of the annotations of the tests may be missing.")
             # print("MOD-lines: ", lines)

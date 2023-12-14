@@ -12,9 +12,9 @@ import pytest
 
 
 from wield.pytest.fixtures import (  # noqa: F401
-    tpath_join,
+    tjoin,
     dprint,
-    fpath_join,
+    fjoin,
     tpath,
     # ws_tracemalloc_auto,  # if imported, will report after each test
 )
@@ -48,7 +48,7 @@ def parse_cov_index(fname):
         p.feed(F.read())
     return p.d
 
-def test_ws_doc_parse_cov_html(tpath_join, fpath_join, dprint):
-    html_file = fpath_join('./index.html')
+def test_ws_doc_parse_cov_html():
+    html_file = fjoin('./index.html')
     d = parse_cov_index(html_file)
     dprint(d)
