@@ -11,11 +11,10 @@ import numpy as np
 import pytest
 
 
-from wield.pytest.fixtures import (  # noqa: F401
+from wield.pytest import (  # noqa: F401
     tjoin,
     dprint,
     fjoin,
-    tpath,
     # ws_tracemalloc_auto,  # if imported, will report after each test
 )
 
