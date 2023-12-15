@@ -82,7 +82,7 @@ test_results/reports/all/%.html:
 		#-pytest $(FILE) --ws-skip-slow --html=$(PREHTML)
 		# This long command runs the specific pytest and generates a coverage file
 		coverage run --source=$(cat modules) --branch --context=$* --data-file=test_results/reports/coverage/$* \
-			-m pytest  -c './pytest.ini' --rootdir='.' $(FILE) --ws-skip-slow --html=$(PREHTML)
+			-m pytest  -c './pytest.ini' --rootdir='.' $(FILE) --ws-skip-slow -m 'not largemem' --html=$(PREHTML)
 		if [ "$$?" -eq 0 ]; \
     then \
 			mv $(PREHTML) test_results/reports/; \
