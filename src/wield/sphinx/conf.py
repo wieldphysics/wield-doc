@@ -57,11 +57,14 @@ extensions = [
     "sphinx_toolbox.collapse",
     # needs sphinx-code-include https://sphinx-code-include.readthedocs.io/en/latest/index.html
     "code_include.extension",
-    # "myst_parser", # conflicts with myst_nb
+    # "myst_parser", # conflicts with myst_nb and myst_nb loads it
     "myst_nb",
+    "sphinx_design",
+    "sphinx.ext.intersphinx",
     "sphinx.ext.autodoc",
     "sphinx.ext.extlinks",
-    "sphinx.ext.autosummary",
+    #"sphinx.ext.autosummary",
+    "wield.sphinx.autosummary",  # use our local modification
     "sphinx.ext.todo",
     # "sphinx.ext.coverage",
     "sphinx.ext.mathjax",
@@ -152,7 +155,7 @@ pygments_style = "default"
 todo_include_todos = True
 
 # -- Options for sourcelinks
-srclink_project = "https://github.com/wield/wield"
+srclink_project = "https://github.com/wieldphysics/wield"
 srclink_src_path = "src/wield/"
 srclink_branch = "main"
 
@@ -168,7 +171,8 @@ html_sourcelink_suffix = ""
 html_title = "wield documentation"
 html_short_title = "wield"
 #html_theme = "alabaster"
-html_theme = "sphinx_rtd_theme"
+#html_theme = "sphinx_rtd_theme"
+html_theme = "furo"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -210,7 +214,7 @@ html_static_path = [
 #
 # This is required for the alabaster theme
 # refs: http://alabaster.readthedocs.io/en/latest/installation.html#sidebars
-html_sidebars = {
+html_sidebars_rtd = {
     "**": [
         "about.html",
         'globaltoc.html',
@@ -227,6 +231,17 @@ html_sidebars = {
     #        ],
 }
 
+html_sidebars_furo = {
+    "**": [
+        "sidebar/scroll-start.html",
+        "sidebar/brand.html",
+        "sidebar/search.html",
+        "sidebar/navigation.html",
+        "sidebar/ethical-ads.html",
+        "sidebar/scroll-end.html",
+    ]
+}
+html_sidebars = html_sidebars_furo
 
 
 # Output file base name for HTML help builder.
@@ -241,7 +256,7 @@ def linkcode_resolve(domain, info):
     if not info['module']:
         return None
     filename = info['module'].replace('.', '/')
-    return "https://github.com/wield/wield/%s.py" % filename
+    return "https://github.com/wieldphysics/wield/%s.py" % filename
 
 
 if not fast_build:
@@ -338,25 +353,25 @@ def linkcode_ws_resolve(domain, info):
 
 
     if module.startswith('wield.quantum'):
-        d['github'] = "https://github.com/wield/wield-quantum/tree/main/src/%s.py" % filename + lno('L')
+        d['github'] = "https://github.com/wieldphysics/wield-quantum/tree/main/src/%s.py" % filename + lno('L')
     elif module.startswith('wield.bunch'):
-        d['github'] = "https://github.com/wield/wield-bunch/tree/main/src/%s.py" % filename + lno('L')
+        d['github'] = "https://github.com/wieldphysics/wield-bunch/tree/main/src/%s.py" % filename + lno('L')
     elif module.startswith('wield.pytest'):
-        d['github'] = "https://github.com/wield/wield-pytest/tree/main/src/%s.py" % filename + lno('L')
+        d['github'] = "https://github.com/wieldphysics/wield-pytest/tree/main/src/%s.py" % filename + lno('L')
     elif module.startswith('wield.utilities'):
-        d['github'] = "https://github.com/wield/wield-utilities/tree/main/src/%s.py" % filename + lno('L')
+        d['github'] = "https://github.com/wieldphysics/wield-utilities/tree/main/src/%s.py" % filename + lno('L')
     elif module.startswith('wield.declarative'):
-        d['github'] = "https://github.com/wield/wield-declarative/tree/main/src/%s.py" % filename + lno('L')
+        d['github'] = "https://github.com/wieldphysics/wield-declarative/tree/main/src/%s.py" % filename + lno('L')
     elif module.startswith('wield.LIGO.IFO'):
-        d['git.ligo'] = "https://git.ligo.org/wield/wield-LIGO-IFO/-/tree/main/src/%s.py" % filename + lno('L')
+        d['git.ligo'] = "https://git.ligo.org/wieldphysics/wield-LIGO-IFO/-/tree/main/src/%s.py" % filename + lno('L')
     elif module.startswith('wield.control'):
-        d['github'] = "https://github.com/wield/wield-control/tree/main/src/%s.py" % filename + lno('L')
+        d['github'] = "https://github.com/wieldphysics/wield-control/tree/main/src/%s.py" % filename + lno('L')
     elif module.startswith('wield.model'):
-        d['github'] = "https://github.com/wield/wield-model/tree/main/src/%s.py" % filename + lno('L')
+        d['github'] = "https://github.com/wieldphysics/wield-model/tree/main/src/%s.py" % filename + lno('L')
     elif module.startswith('wield.iirrational'):
-        d['github'] = "https://github.com/wield/wield-iirrational/tree/main/src/%s.py" % filename + lno('L')
+        d['github'] = "https://github.com/wieldphysics/wield-iirrational/tree/main/src/%s.py" % filename + lno('L')
     elif module.startswith('wield.AAA'):
-        d['github'] = "https://github.com/wield/wield-AAA/tree/main/src/%s.py" % filename + lno('L')
+        d['github'] = "https://github.com/wieldphysics/wield-AAA/tree/main/src/%s.py" % filename + lno('L')
     elif module.lower().startswith('gwinc'):
         d['git.ligo'] = "https://git.ligo.org/gwinc/pygwinc/-/tree/master/pygwinc/%s.py" % filename + lno('L')
     else:
@@ -654,10 +669,72 @@ def ordered_test_outputs(dpath):
 
 
 def setup(app):
-    app.add_css_file("my_theme.css")
+    # app.add_css_file("rtd_theme_adjust.css")
+    app.add_css_file("furo_theme_adjust.css")
     app.add_css_file("pygments_adjust.css")
 
     # add the evennt handler to bond tests to their outputs
     app.connect('autodoc-process-docstring', autodoc_process_docstring)
     return
+
+
+# INTERSPHINX CODE
+
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
+}
+
+def intersphinx_wield_add(
+    name,
+    module,
+    relfile,
+    global_url,
+    current_module,
+    builddir=None
+):
+    if current_module == module:
+        # skip if on the current module
+        return
+    try:
+        mod = importlib.import_module(module)
+    except ImportError:
+        mod = None
+
+    locs = []
+    inserted = False
+    if mod is not None:
+        modpath = os.path.split(mod.__file__)[0]
+        invloc = os.path.abspath(os.path.join(modpath, relfile))
+        if os.path.exists(invloc):
+            inserted = True
+            if builddir is None:
+                # raw link, doesn't work with livereload
+                intersphinx_mapping[name] = (os.path.split(invloc)[0], invloc)
+            else:
+                os.makedirs(os.path.join(builddir), exist_ok=True)
+                sympath = os.path.join(builddir, name)
+                try:
+                    os.symlink(os.path.split(invloc)[0], sympath)
+                except FileExistsError:
+                    pass
+                intersphinx_mapping[name] = ('/'+name, invloc)
+
+    if not inserted:
+        if global_url is not None:
+            locs.append(None)
+            intersphinx_mapping[name] = (global_url, None)
+    pass
+
+
+def intersphinx_include(current_module=None, builddir=None):
+    intersphinx_wield_add(
+        name = 'wield-declarative',
+        module = 'wield.declarative',
+        relfile = '../../../docs/build/sphinx/html/objects.inv',
+        global_url = None,
+        builddir=builddir,
+        current_module=current_module,
+    )
+
+    print("INTERSPHINX: ", intersphinx_mapping)
 
